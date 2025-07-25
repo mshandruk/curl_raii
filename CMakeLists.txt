@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.16)
+project(curl_raii)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_library(${PROJECT_NAME}
+        src/curl_raii.cpp
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC curl
+)
+
+option(BUILD_TESTS "Build tests" OFF)
+
+if (BUILD_TESTS)
+    message(STATUS "Building tests")
+    enable_testing()
+
+    add_subdirectory(third_party/googletest)
+    add_subdirectory(tests)
+endif ()
