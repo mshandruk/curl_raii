@@ -3,22 +3,24 @@
 
 using namespace curl_raii;
 
-TEST(CurlRAIITest, CallCleanUpOnDestuction)
+TEST(CurlRAIITest, CallsClenup_WhenDestroyed)
 {
     bool cleanup_called = false;
     auto fake_init_func = []() {
         static CURL *dummy;
         return &dummy;
     };
+
     auto fake_cleanup_func = [&](CURL *) {
         cleanup_called = true;
     }; {
         CurlRAII curl_raii{fake_init_func, fake_cleanup_func};
     }
+
     ASSERT_TRUE(cleanup_called);
 }
 
-TEST(CurlRAIITest, ThrowsIfInitFailsAndNoClean)
+TEST(CurlRAIITest, Throws_WhenInitFails_AndDoesNotCleanup)
 {
     bool cleanup_called = false;
     auto fake_init_func = []() {
