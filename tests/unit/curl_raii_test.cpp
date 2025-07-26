@@ -33,3 +33,9 @@ TEST(CurlRAIITest, ThrowsIfInitFailsAndNoClean)
     );
     EXPECT_FALSE(cleanup_called);
 }
+
+TEST(CurlRAIITest, DefaultConstructor_InitializesValidHandle)
+{
+    CurlRAII curl_raii;
+    EXPECT_TRUE(curl_raii.get());
+}
