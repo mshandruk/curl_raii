@@ -30,7 +30,7 @@ namespace curl_raii
         CURL *operator->() const;
 
     private:
-        CURL *curl = nullptr;
+        CURL *handle_ = nullptr;
         InitFunc init_;
         CleanUpFunc cleanup_;
     };

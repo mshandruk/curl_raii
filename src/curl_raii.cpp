@@ -9,29 +9,32 @@ namespace curl_raii
     CurlRAII::CurlRAII(InitFunc init, CleanUpFunc cleanup)
         : init_{std::move(init)}, cleanup_{std::move(cleanup)}
     {
-        curl = init_();
-        if (!curl)
+        handle_ = init_();
+        if (!handle_)
         {
-            throw std::runtime_error("failed curl_initialize");
+            throw std::runtime_error("curl_easy_init failed");
         }
     }
 
     CurlRAII::CurlRAII(CurlRAII &&other) noexcept
-        : init_{std::move(other.init_)}, cleanup_{std::move(other.cleanup_)}
+        : handle_{other.handle_},
+          init_{std::move(other.init_)},
+          cleanup_{std::move(other.cleanup_)}
     {
-        curl = other.curl;
-        other.curl = nullptr;
+        other.handle_ = nullptr;
     }
 
     CurlRAII &CurlRAII::operator=(CurlRAII &&other) noexcept
     {
         if (this == &other) return *this;
-        if (curl && cleanup_)
+
+        if (handle_ && cleanup_)
         {
-            cleanup_(curl);
+            cleanup_(handle_);
         }
-        curl = other.curl;
-        other.curl = nullptr;
+
+        handle_ = other.handle_;
+        other.handle_ = nullptr;
         init_ = std::move(other.init_);
         cleanup_ = std::move(other.cleanup_);
 
@@ -40,19 +43,19 @@ namespace curl_raii
 
     CurlRAII::~CurlRAII()
     {
-        if (curl && cleanup_)
+        if (handle_ && cleanup_)
         {
-            cleanup_(curl);
+            cleanup_(handle_);
         }
     }
 
     CURL *CurlRAII::get() const
     {
-        return curl;
+        return handle_;
     }
 
     CURL *CurlRAII::operator->() const
     {
-        return curl;
+        return handle_;
     }
 }
