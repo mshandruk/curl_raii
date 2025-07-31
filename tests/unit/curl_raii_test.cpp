@@ -3,7 +3,7 @@
 
 using namespace curl_raii;
 
-TEST(CurlRAIITest, CallsClenup_WhenDestroyed)
+TEST(CurlRAIITest, CallsCleanup_WhenDestroyed)
 {
     bool cleanup_called = false;
     auto fake_init_func = []() {
@@ -20,7 +20,7 @@ TEST(CurlRAIITest, CallsClenup_WhenDestroyed)
     ASSERT_TRUE(cleanup_called);
 }
 
-TEST(CurlRAIITest, Throws_WhenInitFails_AndDoesNotCleanup)
+TEST(CurlRAIITest, Throws_WhenInitFails_AndDoesNotCallCleanup)
 {
     bool cleanup_called = false;
     auto fake_init_func = []() {
@@ -36,8 +36,43 @@ TEST(CurlRAIITest, Throws_WhenInitFails_AndDoesNotCleanup)
     EXPECT_FALSE(cleanup_called);
 }
 
-TEST(CurlRAIITest, DefaultConstructor_InitializesValidHandle)
+TEST(CurlRAIITest, Succeeds_WhenConstructedWithDefaults)
 {
     CurlRAII curl_raii;
     EXPECT_TRUE(curl_raii.get());
+}
+
+TEST(CurlRAIITest, Throws_WhenInitAndCleanupAreNullptr)
+{
+    EXPECT_THROW(CurlRAII(nullptr, nullptr), std::invalid_argument);
+}
+
+TEST(CurlRAIITest, Throws_WhenInitIsNullptr)
+{
+    auto fake_cleanup = [](CURL *) {
+    };
+    EXPECT_THROW(CurlRAII(nullptr,fake_cleanup), std::invalid_argument);
+}
+
+TEST(CurlRAIITest, Throws_WhenCleanupIsNullptr)
+{
+    auto fake_init = []() {
+        static CURL *handle;
+        return &handle;
+    };
+
+    EXPECT_THROW(CurlRAII(fake_init, nullptr), std::invalid_argument);
+}
+
+TEST(CurlRAIITest, DoesNotThrow_WhenInitAndCleanupAreValid)
+{
+    auto fake_init = []() {
+        static CURL *handle;
+        return &handle;
+    };
+
+    auto fake_cleanup = [](CURL *) {
+    };
+
+    EXPECT_NO_THROW(CurlRAII(fake_init, fake_cleanup));
 }
