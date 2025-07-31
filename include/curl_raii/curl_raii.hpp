@@ -33,5 +33,7 @@ namespace curl_raii
         CURL *handle_ = nullptr;
         InitFunc init_;
         CleanUpFunc cleanup_;
+
+        void check_callbacks() const;
     };
 } //namespace curl_raii

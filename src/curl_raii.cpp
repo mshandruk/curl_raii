@@ -9,6 +9,7 @@ namespace curl_raii
     CurlRAII::CurlRAII(InitFunc init, CleanUpFunc cleanup)
         : init_{std::move(init)}, cleanup_{std::move(cleanup)}
     {
+        check_callbacks();
         handle_ = init_();
         if (!handle_)
         {
@@ -22,22 +23,20 @@ namespace curl_raii
           cleanup_{std::move(other.cleanup_)}
     {
         other.handle_ = nullptr;
+        check_callbacks();
     }
 
     CurlRAII &CurlRAII::operator=(CurlRAII &&other) noexcept
     {
         if (this == &other) return *this;
 
-        if (handle_ && cleanup_)
-        {
-            cleanup_(handle_);
-        }
+        if (handle_ && cleanup_) cleanup_(handle_);
 
         handle_ = other.handle_;
         other.handle_ = nullptr;
         init_ = std::move(other.init_);
         cleanup_ = std::move(other.cleanup_);
-
+        check_callbacks();
         return *this;
     }
 
@@ -57,5 +56,13 @@ namespace curl_raii
     CURL *CurlRAII::operator->() const
     {
         return handle_;
+    }
+
+    void CurlRAII::check_callbacks() const
+    {
+        if (!init_ || !cleanup_)
+        {
+            throw std::invalid_argument("init and cleanup must be valid functions");
+        }
     }
 }
