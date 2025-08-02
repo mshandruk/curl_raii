@@ -12,7 +12,10 @@ namespace curl_raii
         using InitFunc = std::function<CURL*()>;
         using CleanUpFunc = std::function<void(CURL *)>;
 
-        explicit CurlRAII(InitFunc init = curl_easy_init, CleanUpFunc cleanup = curl_easy_cleanup);
+        explicit CurlRAII(
+            InitFunc init = curl_easy_init,
+            CleanUpFunc cleanup = curl_easy_cleanup
+        );
 
         ~CurlRAII();
 
@@ -24,10 +27,7 @@ namespace curl_raii
 
         CurlRAII &operator=(CurlRAII &&other) noexcept;
 
-        [[nodiscard]]
-        CURL *get() const;
-
-        CURL *operator->() const;
+        [[nodiscard]] CURL *get() const;
 
     private:
         CURL *handle_ = nullptr;
