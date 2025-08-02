@@ -4,8 +4,11 @@
 
 #include <curl/curl.h>
 
+#include "policy.hpp"
+
 namespace curl_raii
 {
+    template<typename GlobalPolicy = CurlGlobalPolicy>
     class CurlRAII
     {
     public:
@@ -37,3 +40,4 @@ namespace curl_raii
         void check_callbacks() const;
     };
 } //namespace curl_raii
+#include "curl_raii_impl.inl"

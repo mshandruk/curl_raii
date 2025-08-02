@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <curl_raii/curl_raii.hpp>
 
 using namespace curl_raii;
@@ -75,4 +76,59 @@ TEST(CurlRAIITest, DoesNotThrow_WhenInitAndCleanupAreValid)
     };
 
     EXPECT_NO_THROW(CurlRAII(fake_init, fake_cleanup));
+}
+
+class DummyGlobalPolicy
+{
+public:
+    static void ensure_initialized()
+    {
+        was_called_init_ = true;
+    }
+
+    static void cleanup()
+    {
+        was_called_cleanup_ = true;
+    }
+
+    static bool was_called_init()
+    {
+        return was_called_init_;
+    }
+
+    static bool was_called_cleanup()
+    {
+        return was_called_cleanup_;
+    }
+
+private:
+    inline static bool was_called_init_ = false;
+    inline static bool was_called_cleanup_ = false;
+};
+
+TEST(CurlRAIITest, CallsEnsureGlobalPolicyInit_WhenConstructed)
+{
+    CurlRAII<DummyGlobalPolicy> curl_raii(
+        []() {
+            static CURL *handler;
+            return &handler;
+        },
+        [](CURL *) {
+        }
+    );
+    EXPECT_TRUE(DummyGlobalPolicy::was_called_init);
+}
+
+TEST(CurlRAIITest, CallsGlobalPolicyCleanup_WhenDestucted)
+{ {
+        CurlRAII<DummyGlobalPolicy> curl_raii(
+            []() {
+                static CURL *curl;
+                return &curl;
+            },
+            [](CURL *) {
+            }
+        );
+    }
+    EXPECT_TRUE(DummyGlobalPolicy::was_called_cleanup);
 }
