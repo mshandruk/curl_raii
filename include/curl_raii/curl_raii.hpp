@@ -40,4 +40,4 @@ namespace curl_raii
         void check_callbacks() const;
     };
 } //namespace curl_raii
-#include "curl_raii_impl.inl"
+#include "curl_raii.inl"
