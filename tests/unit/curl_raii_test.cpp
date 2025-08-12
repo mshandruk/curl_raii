@@ -28,7 +28,7 @@ TEST(CurlRAIITest, Throws_WhenInitFails_AndDoesNotCallCleanup)
         return nullptr;
     };
     auto fake_cleanup_func = [&](CURL *) {
-        cleanup_called = false;
+        cleanup_called = true;
     };
     ASSERT_THROW(
         CurlRAII(fake_init_func, fake_cleanup_func),
