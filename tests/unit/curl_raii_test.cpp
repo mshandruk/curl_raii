@@ -112,6 +112,12 @@ public:
         return was_called_cleanup_;
     }
 
+    static void reset()
+    {
+        was_called_init_ = false;
+        was_called_cleanup_ = false;
+    }
+
 private:
     inline static bool was_called_init_ = false;
     inline static bool was_called_cleanup_ = false;
@@ -119,27 +125,16 @@ private:
 
 TEST(CurlRAIITest, CallsEnsureGlobalPolicyInit_WhenConstructed)
 {
-    CurlRAII<DummyGlobalPolicy> curl_raii(
-        []() {
-            static CURL *handler;
-            return &handler;
-        },
-        [](CURL *) {
-        }
-    );
-    EXPECT_TRUE(DummyGlobalPolicy::was_called_init);
+    DummyGlobalPolicy::reset();
+    CurlRAII<DummyGlobalPolicy> curl_raii;
+
+    EXPECT_TRUE(DummyGlobalPolicy::was_called_init());
 }
 
 TEST(CurlRAIITest, CallsGlobalPolicyCleanup_WhenDestucted)
-{ {
-        CurlRAII<DummyGlobalPolicy> curl_raii(
-            []() {
-                static CURL *curl;
-                return &curl;
-            },
-            [](CURL *) {
-            }
-        );
+{
+    DummyGlobalPolicy::reset(); {
+        CurlRAII<DummyGlobalPolicy> curl_raii;
     }
-    EXPECT_TRUE(DummyGlobalPolicy::was_called_cleanup);
+    EXPECT_TRUE(DummyGlobalPolicy::was_called_cleanup());
 }
