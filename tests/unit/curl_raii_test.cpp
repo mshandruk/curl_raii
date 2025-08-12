@@ -30,6 +30,7 @@ TEST(CurlRAIITest, Throws_WhenInitFails_AndDoesNotCallCleanup)
     auto fake_cleanup_func = [&](CURL *) {
         cleanup_called = true;
     };
+
     ASSERT_THROW(
         CurlRAII(fake_init_func, fake_cleanup_func),
         std::runtime_error
@@ -45,14 +46,21 @@ TEST(CurlRAIITest, Succeeds_WhenConstructedWithDefaults)
 
 TEST(CurlRAIITest, Throws_WhenInitAndCleanupAreNullptr)
 {
-    EXPECT_THROW(CurlRAII(nullptr, nullptr), std::invalid_argument);
+    EXPECT_THROW(
+        CurlRAII(nullptr, nullptr),
+        std::invalid_argument
+    );
 }
 
 TEST(CurlRAIITest, Throws_WhenInitIsNullptr)
 {
     auto fake_cleanup = [](CURL *) {
     };
-    EXPECT_THROW(CurlRAII(nullptr,fake_cleanup), std::invalid_argument);
+
+    EXPECT_THROW(
+        CurlRAII(nullptr,fake_cleanup),
+        std::invalid_argument
+    );
 }
 
 TEST(CurlRAIITest, Throws_WhenCleanupIsNullptr)
@@ -62,7 +70,10 @@ TEST(CurlRAIITest, Throws_WhenCleanupIsNullptr)
         return &handle;
     };
 
-    EXPECT_THROW(CurlRAII(fake_init, nullptr), std::invalid_argument);
+    EXPECT_THROW(
+        CurlRAII(fake_init, nullptr),
+        std::invalid_argument
+    );
 }
 
 TEST(CurlRAIITest, DoesNotThrow_WhenInitAndCleanupAreValid)
