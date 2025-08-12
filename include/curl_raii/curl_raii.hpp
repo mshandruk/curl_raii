@@ -8,7 +8,7 @@
 
 namespace curl_raii
 {
-    template<typename GlobalPolicy = CurlGlobalPolicy>
+    template<typename GlobalInitPolicy = CurlGlobalInitPolicy>
     class CurlRAII
     {
     public:

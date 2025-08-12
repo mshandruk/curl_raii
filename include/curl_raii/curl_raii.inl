@@ -4,13 +4,13 @@
 
 namespace curl_raii
 {
-    template<typename GlobalPolicy>
-    CurlRAII<GlobalPolicy>::CurlRAII(InitFunc init, CleanUpFunc cleanup)
+    template<typename GlobalInitPolicy>
+    CurlRAII<GlobalInitPolicy>::CurlRAII(InitFunc init, CleanUpFunc cleanup)
         : init_{std::move(init)},
           cleanup_{std::move(cleanup)}
     {
         check_callbacks();
-        GlobalPolicy::ensure_initialized();
+        GlobalInitPolicy::ensure_initialized();
         handle_ = init_();
         if (!handle_)
         {

@@ -6,7 +6,7 @@
 
 namespace curl_raii
 {
-    class CurlGlobalPolicy
+    class CurlGlobalInitPolicy
     {
     public:
         static void ensure_initialized()
