@@ -18,8 +18,8 @@ namespace curl_raii
         }
     }
 
-    template<typename GlobalPolicy>
-    CurlRAII<GlobalPolicy>::CurlRAII(CurlRAII &&other) noexcept
+    template<typename GlobalInitPolicy>
+    CurlRAII<GlobalInitPolicy>::CurlRAII(CurlRAII &&other) noexcept
         : handle_{other.handle_},
           init_{std::move(other.init_)},
           cleanup_{std::move(other.cleanup_)}
@@ -28,8 +28,8 @@ namespace curl_raii
         check_callbacks();
     }
 
-    template<typename GlobalPolicy>
-    CurlRAII<GlobalPolicy> &CurlRAII<GlobalPolicy>::operator=(CurlRAII &&other) noexcept
+    template<typename GlobalInitPolicy>
+    CurlRAII<GlobalInitPolicy> &CurlRAII<GlobalInitPolicy>::operator=(CurlRAII &&other) noexcept
     {
         if (this == &other)
         {
@@ -47,24 +47,24 @@ namespace curl_raii
         return *this;
     }
 
-    template<typename GlobalPolicy>
-    CurlRAII<GlobalPolicy>::~CurlRAII()
+    template<typename GlobalInitPolicy>
+    CurlRAII<GlobalInitPolicy>::~CurlRAII()
     {
         if (handle_ && cleanup_)
         {
             cleanup_(handle_);
         }
-        GlobalPolicy::cleanup();
+        GlobalInitPolicy::cleanup();
     }
 
-    template<typename GlobalPolicy>
-    CURL *CurlRAII<GlobalPolicy>::get() const
+    template<typename GlobalInitPolicy>
+    CURL *CurlRAII<GlobalInitPolicy>::get() const
     {
         return handle_;
     }
 
-    template<typename GlobalPolicy>
-    void CurlRAII<GlobalPolicy>::check_callbacks() const
+    template<typename GlobalInitPolicy>
+    void CurlRAII<GlobalInitPolicy>::check_callbacks() const
     {
         if (!init_ || !cleanup_)
         {

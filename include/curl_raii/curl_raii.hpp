@@ -33,7 +33,7 @@ namespace curl_raii
         [[nodiscard]] CURL *get() const;
 
     private:
-        CURL *handle_ = nullptr;
+        CURL *handle_;
         InitFunc init_;
         CleanUpFunc cleanup_;
 
