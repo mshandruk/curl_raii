@@ -1,16 +1,25 @@
 #pragma once
 
+#include <stdexcept>
+#include <memory>
+
+#include "curl_raii_adapter_impl.hpp"
+
 namespace curl_raii
 {
-    template<typename GlobalPolicy>
-    CurlEasySession<GlobalPolicy>::CurlEasySession(CurlRAII<> curl_raii)
-        : curl_raii_{std::move(curl_raii)}
+    inline CurlEasySession::CurlEasySession()
+        : owned_adapter_{std::make_unique<CurlRAIIAdapterImpl>()}, curl_raii_adapter_{*owned_adapter_}
     {
-        handle_ = curl_raii_.get();
+        handle_ = curl_raii_adapter_.get();
     }
 
-    template<typename GlobalPolicy>
-    void CurlEasySession<GlobalPolicy>::perform() const
+    inline CurlEasySession::CurlEasySession(CurlRAIIAdapter &curl_raii_adapter)
+        : curl_raii_adapter_{curl_raii_adapter}
+    {
+        handle_ = curl_raii_adapter.get();
+    }
+
+    inline void CurlEasySession::perform() const
     {
         CURLcode code = curl_easy_perform(handle_);
         if (code != CURLE_OK)
@@ -22,22 +31,19 @@ namespace curl_raii
         }
     }
 
-    template<typename GlobalPolicy>
     template<typename Value>
-    void CurlEasySession<GlobalPolicy>::set_option(const CURLoption &option, Value value)
+    void CurlEasySession::set_option(const CURLoption &option, Value value)
     {
         set_option_impl(option, value);
     }
 
-    template<typename GlobalPolicy>
-    void CurlEasySession<GlobalPolicy>::set_url(const std::string &url)
+    inline void CurlEasySession::set_url(const std::string &url)
     {
         set_option_impl(CURLOPT_URL, url.c_str());
     }
 
-    template<typename GlobalPolicy>
     template<typename Value>
-    void CurlEasySession<GlobalPolicy>::set_option_impl(const CURLoption &option, Value value)
+    void CurlEasySession::set_option_impl(const CURLoption &option, Value value)
     {
         CURLcode code = curl_easy_setopt(handle_, option, value);
 

@@ -1,16 +1,20 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 #include "curl/curl.h"
 
-#include "curl_raii/curl_raii.hpp"
+#include "curl_raii_adapter.hpp"
 
 namespace curl_raii
 {
-    template<typename GlobalPolicy = CurlGlobalInitPolicy>
     class CurlEasySession
     {
     public:
-        explicit CurlEasySession(CurlRAII<> curl_raii = CurlRAII<>{});
+        CurlEasySession();
+
+        explicit CurlEasySession(CurlRAIIAdapter &curl_raii_adapter);
 
         void perform() const;
 
@@ -23,8 +27,9 @@ namespace curl_raii
         template<typename Value>
         void set_option_impl(const CURLoption &option, Value value);
 
-        CurlRAII<> curl_raii_;
-        CURL *handle_{};
+        std::unique_ptr<CurlRAIIAdapter> owned_adapter_;
+        CurlRAIIAdapter &curl_raii_adapter_;
+        CURL *handle_;
     };
 }
 
