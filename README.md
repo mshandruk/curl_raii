@@ -1,5 +1,4 @@
-Curl RAII Wrapper
-------------------
+# Curl RAII Wrapper
 
 Минималистичная обёртка для libcurl с использованием идиомы RAII и адаптеров.
 
@@ -10,59 +9,68 @@ Curl RAII Wrapper
 - Интерфейсный подход для легкой подмены HTTP-клиента (`CurlRAIIAdapter` / `HttpClient`)
 - Легко тестируется с помощью моков
 
-Примеры использования
----------------------
+# Системные зависимости
+
+Проект использует **libcurl**. Перед сборкой нужно установить библиотеку и заголовочные файлы.
+
+### Ubuntu / Debian
+
+```bash
+sudo apt update
+sudo apt install libcurl4-openssl-dev
+```
+
+На других системах используйте менеджер пакетов вашей ОС.
+
+# Примеры использования
 
 Полные примеры находятся в папке [examples](examples):
 
 - `http_get.cpp` — простой HTTP GET запрос
 - `download_file.cpp` — скачивание файла
 
+# Работа с субмодулями (GoogleTest)
+
+Для поддержки тестов(gtest) нужно выполнить клонирование
+
+```bash
+git clone --recurse-submodules  https://github.com/mshandruk/curl_raii.git
+```
+
+если репозиторий был сколнирован без субмодулей:
+
+```bash
+git submodule update --init --recursive
+```
+
 Сборка
 ------
 
 #### Только библиотека
 
-````
+```bash
 cmake -B build
-````
-
-````
 cmake --build build
-````
+```
 
 #### С тестами
 
-````
+```bash
 cmake -B build -DBUILD_TESTS=ON
-````
-
-````
 cmake --build build
-````
-
-Запуск тестов
-
-```
 ctest --output-on-failure
 ```
 
 #### С примерами
 
-```
+```bash
 cmake -B build -DBUILD_EXAMPLES=ON
+cmake --build build
+
+./build/examples/http_get_example
+./build/examples/download_file_example
 ```
 
-````
-cmake --build build
-````
-
-Запуск
-
-````
-./build/examples/http_get_example
-````
-
-````
-./build/examples/download_file_example
-````
+Лицензия
+--------
+MIT License. Подробнее в файле LICENSE.
