@@ -8,7 +8,8 @@
 namespace curl_raii
 {
     inline CurlEasySession::CurlEasySession()
-        : owned_adapter_{std::make_unique<CurlRAIIAdapterImpl>()}, curl_raii_adapter_{*owned_adapter_}
+        : owned_adapter_{std::make_unique<CurlRAIIAdapterImpl>()},
+          curl_raii_adapter_{*owned_adapter_}
     {
         handle_ = curl_raii_adapter_.get();
     }
