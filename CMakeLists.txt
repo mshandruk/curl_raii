@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
-project(curl_raii)
+project(curl_raii VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(${PROJECT_NAME} INTERFACE)
 
@@ -9,9 +10,7 @@ target_include_directories(${PROJECT_NAME} INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(${PROJECT_NAME} INTERFACE
-        curl
-)
+target_link_libraries(${PROJECT_NAME} INTERFACE curl)
 
 option(BUILD_TESTS "Build tests" OFF)
 if (BUILD_TESTS)
@@ -25,5 +24,5 @@ endif ()
 option(BUILD_EXAMPLES "Build examples" OFF)
 if (BUILD_EXAMPLES)
     message(STATUS "Building examples")
-    add_subdirectory(example)
+    add_subdirectory(examples)
 endif ()
