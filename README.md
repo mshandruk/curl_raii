@@ -20,6 +20,12 @@ sudo apt update
 sudo apt install libcurl4-openssl-dev
 ```
 
+Для сборки потребуется CMake
+
+```bash
+sudo apt install cmake
+```
+
 На других системах используйте менеджер пакетов вашей ОС.
 
 # Примеры использования
