@@ -2,12 +2,7 @@
 #include <string>
 
 #include <curl_raii/curl_easy_session.hpp>
-
-static size_t write_to_string(const void *contents, size_t size, size_t nmemb, void *userp)
-{
-    static_cast<std::string *>(userp)->append(static_cast<const char *>(contents), size * nmemb);
-    return size * nmemb;
-}
+#include <curl_raii/utils.hpp>
 
 using namespace curl_raii;
 

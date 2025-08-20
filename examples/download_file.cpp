@@ -1,14 +1,7 @@
 #include <fstream>
 
 #include <curl_raii/curl_easy_session.hpp>
-
-
-static size_t write_to_file(const void *contents, size_t size, size_t nmemb, void *userp)
-{
-    auto *ofs = static_cast<std::ofstream *>(userp);
-    ofs->write(static_cast<const char *>(contents), static_cast<std::streamsize>(size * nmemb));
-    return size * nmemb;
-}
+#include <curl_raii/utils.hpp>
 
 using namespace curl_raii;
 
