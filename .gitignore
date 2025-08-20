@@ -36,3 +36,5 @@
 
 cmake-build-debug
 build
+
+third_party/googletest/
