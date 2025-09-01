@@ -62,7 +62,7 @@ cmake --build build
 #### С тестами
 
 ```bash
-cmake -B build -DBUILD_TESTS=ON
+cmake -B build -DCURL_RAII_BUILD_TESTS=ON
 cmake --build build
 ctest --output-on-failure
 ```
@@ -70,7 +70,7 @@ ctest --output-on-failure
 #### С примерами
 
 ```bash
-cmake -B build -DBUILD_EXAMPLES=ON
+cmake -B build -DCURL_RAII_BUILD_EXAMPLES=ON
 cmake --build build
 
 ./build/examples/http_get_example

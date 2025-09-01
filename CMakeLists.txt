@@ -12,8 +12,8 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 
 target_link_libraries(${PROJECT_NAME} INTERFACE curl)
 
-option(BUILD_TESTS "Build tests" OFF)
-if (BUILD_TESTS)
+option(CURL_RAII_BUILD_TESTS "Build tests" OFF)
+if (CURL_RAII_BUILD_TESTS)
     message(STATUS "Building tests")
     enable_testing()
 
@@ -21,8 +21,8 @@ if (BUILD_TESTS)
     add_subdirectory(tests)
 endif ()
 
-option(BUILD_EXAMPLES "Build examples" OFF)
-if (BUILD_EXAMPLES)
+option(CURL_RAII_BUILD_EXAMPLES "Build examples" OFF)
+if (CURL_RAII_BUILD_EXAMPLES)
     message(STATUS "Building examples")
     add_subdirectory(examples)
 endif ()
